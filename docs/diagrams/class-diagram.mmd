@@ -1,0 +1,75 @@
+classDiagram
+  class Provider {
+    +string id
+    +string name
+    +string baseUrl
+    +string status
+    +string notes
+    +enable()
+    +disable()
+  }
+  class ApiKey {
+    +string id
+    +string providerId
+    +string label
+    -string secret
+    +string owner
+    +string status
+    +maskSecret() string
+    +rotateSecret(secret)
+  }
+  class Model {
+    +string id
+    +string providerId
+    +string name
+    +number contextWindow
+    +number inputPricePer1K
+    +number outputPricePer1K
+    +number cacheDiscount
+    +boolean toolCalling
+    +string status
+    +disable()
+  }
+  class ModelCall {
+    +string id
+    +string providerId
+    +string modelId
+    +string toolName
+    +number inputTokens
+    +number outputTokens
+    +boolean cacheHit
+    +number latencyMs
+    +boolean success
+    +calculateCost() number
+    +calculateCacheSavings() number
+  }
+  class BillingPolicy {
+    +string currency
+    +number monthlyBudget
+    +number warningThreshold
+    +number retentionDays
+    +isOverBudget(totalCost) boolean
+  }
+  class SummaryService {
+    +computeSummary(store) object
+    +enrichCall(call) object
+    +groupByProvider(calls) list
+    +groupByTool(calls) list
+  }
+  class StoreRepository {
+    +readStore() object
+    +writeStore(store)
+    +mergeById(collection, id, patch)
+    +removeById(collection, id)
+  }
+
+  Provider "1" --> "*" ApiKey
+  Provider "1" --> "*" Model
+  Provider "1" --> "*" ModelCall
+  Model "1" --> "*" ModelCall
+  BillingPolicy --> SummaryService
+  SummaryService --> ModelCall
+  StoreRepository --> Provider
+  StoreRepository --> ApiKey
+  StoreRepository --> Model
+  StoreRepository --> ModelCall

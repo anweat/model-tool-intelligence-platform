@@ -1,0 +1,14 @@
+{
+  "name": "model-key-ledger",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MVP for managing model provider API keys, model catalog, usage, cache hit rate, tool summaries, and billing.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node tools/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

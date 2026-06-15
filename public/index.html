@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模型工具调用智能分析平台</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">ML</span>
+        <div>
+          <strong>工具调用分析</strong>
+          <span>Model Tool Intelligence</span>
+        </div>
+      </div>
+      <nav>
+        <a href="#dashboard">总览</a>
+        <a href="#providers">供应商</a>
+        <a href="#keys">API Key</a>
+        <a href="#models">模型目录</a>
+        <a href="#calls">调用登记</a>
+        <a href="#reports">报表</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <h1>模型工具调用智能分析平台</h1>
+          <p>从模型调用日志中自动推导系统画像、工具价值、缓存收益、成本风险和上线可行性，为多模型系统选型和治理提供依据。</p>
+        </div>
+        <div class="top-actions">
+          <button id="exportBtn" class="ghost">导出报表</button>
+          <button id="archiveBtn" class="ghost">归档过期调用</button>
+          <button id="resetBtn" class="ghost">重置演示数据</button>
+        </div>
+      </header>
+
+      <section id="insightHero" class="insight-hero"></section>
+      <section id="dashboard" class="metrics-grid"></section>
+
+      <section class="workbench">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>预算与告警</h2>
+          </div>
+          <form id="settingsForm" class="form-grid">
+            <input name="monthlyBudget" type="number" step="0.000001" placeholder="月预算 USD" />
+            <input name="warningThreshold" type="number" min="0" max="1" step="0.01" placeholder="告警阈值 0-1" />
+            <input name="retentionDays" type="number" placeholder="日志保留天数" />
+            <button type="submit">保存设置</button>
+          </form>
+          <div id="budgetPanel" class="budget"></div>
+        </div>
+        <div class="panel" id="reports">
+          <div class="panel-head">
+            <h2>统计报表</h2>
+          </div>
+          <div id="reportLists" class="report-grid"></div>
+        </div>
+      </section>
+
+      <section class="workbench">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>工具调用洞察</h2>
+          </div>
+          <div id="toolInsightList" class="tool-table"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h2>方案可行性测算</h2>
+          </div>
+          <form id="feasibilityForm" class="form-grid">
+            <select name="modelId" required></select>
+            <input name="monthlyCalls" type="number" placeholder="预计月调用次数" value="1000" />
+            <input name="inputTokens" type="number" placeholder="单次输入 Tokens" value="2000" />
+            <input name="outputTokens" type="number" placeholder="单次输出 Tokens" value="500" />
+            <input name="targetCacheHitRate" type="number" min="0" max="1" step="0.01" placeholder="目标缓存命中率 0-1" value="0.4" />
+            <button type="submit">开始测算</button>
+          </form>
+          <div id="feasibilityResult" class="report-block"></div>
+        </div>
+      </section>
+
+      <section class="workbench">
+        <div class="panel" id="providers">
+          <div class="panel-head">
+            <h2>供应商管理</h2>
+          </div>
+          <form id="providerForm" class="form-grid">
+            <input name="name" placeholder="供应商名称" required />
+            <input name="baseUrl" placeholder="Base URL" />
+            <input name="notes" placeholder="备注" />
+            <button type="submit">新增供应商</button>
+          </form>
+          <div id="providerList" class="list"></div>
+        </div>
+
+        <div class="panel" id="keys">
+          <div class="panel-head">
+            <h2>API Key 管理</h2>
+          </div>
+          <form id="keyForm" class="form-grid" autocomplete="off">
+            <select name="providerId" required></select>
+            <input name="label" placeholder="Key 标签" autocomplete="off" required />
+            <input name="owner" placeholder="负责人" autocomplete="off" />
+            <input name="secret" type="password" placeholder="API Key" autocomplete="current-password" required />
+            <button type="submit">保存 Key</button>
+          </form>
+          <div id="keyList" class="list"></div>
+        </div>
+      </section>
+
+      <section class="workbench">
+        <div class="panel" id="models">
+          <div class="panel-head">
+            <h2>模型目录与价格</h2>
+          </div>
+          <form id="modelForm" class="form-grid">
+            <select name="providerId" required></select>
+            <input name="name" placeholder="模型名称" required />
+            <input name="contextWindow" type="number" placeholder="上下文窗口" />
+            <input name="inputPricePer1K" type="number" step="0.000001" placeholder="输入单价/1K" />
+            <input name="outputPricePer1K" type="number" step="0.000001" placeholder="输出单价/1K" />
+            <input name="cacheDiscount" type="number" min="0" max="1" step="0.01" placeholder="缓存折扣 0-1" />
+            <label class="check"><input name="toolCalling" type="checkbox" checked /> 支持工具调用</label>
+            <button type="submit">新增模型</button>
+          </form>
+          <div id="modelList" class="list"></div>
+        </div>
+
+        <div class="panel" id="calls">
+          <div class="panel-head">
+            <h2>调用登记</h2>
+          </div>
+          <form id="callForm" class="form-grid">
+            <select name="providerId" required></select>
+            <select name="modelId" required></select>
+            <input name="toolName" placeholder="工具名称，例如 search_docs" />
+            <input name="inputTokens" type="number" placeholder="输入 Tokens" required />
+            <input name="outputTokens" type="number" placeholder="输出 Tokens" required />
+            <input name="latencyMs" type="number" placeholder="耗时 ms" />
+            <input name="errorType" placeholder="失败类型，例如 rate_limit" />
+            <label class="check"><input name="cacheHit" type="checkbox" /> 缓存命中</label>
+            <label class="check"><input name="success" type="checkbox" checked /> 调用成功</label>
+            <button type="submit">登记调用</button>
+          </form>
+          <div id="callList" class="list compact"></div>
+        </div>
+      </section>
+
+      <section class="workbench single">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>审计日志</h2>
+          </div>
+          <div id="auditList" class="list compact"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

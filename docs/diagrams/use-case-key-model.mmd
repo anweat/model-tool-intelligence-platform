@@ -1,0 +1,21 @@
+flowchart LR
+  Admin["系统管理员"]
+  Security["安全负责人"]
+  System["模型密钥账本系统"]
+
+  UC1["登记供应商"]
+  UC2["维护 API Key"]
+  UC3["脱敏查看密钥"]
+  UC4["维护模型目录"]
+  UC5["设置模型价格"]
+
+  Admin --> UC1
+  Admin --> UC2
+  Admin --> UC4
+  Admin --> UC5
+  Security --> UC3
+  UC1 --> System
+  UC2 --> System
+  UC3 --> System
+  UC4 --> System
+  UC5 --> System

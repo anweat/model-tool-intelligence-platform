@@ -1,0 +1,17 @@
+sequenceDiagram
+  actor User as 开发人员
+  participant UI as 前端管理台
+  participant API as HTTP API
+  participant Store as store.json
+  participant Summary as SummaryService
+
+  User->>UI: 提交调用登记表单
+  UI->>API: POST /api/calls
+  API->>Store: readStore()
+  API->>API: 校验 providerId 和 modelId
+  API->>Store: writeStore(call)
+  API->>Summary: computeSummary(store)
+  Summary->>Summary: enrichCall() 计算费用和缓存节省
+  Summary-->>API: summary
+  API-->>UI: state + summary
+  UI-->>User: 刷新总览、报表和调用列表

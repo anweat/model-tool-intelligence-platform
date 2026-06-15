@@ -1,0 +1,13 @@
+node_modules/
+.arts/
+.codeartsdoer/
+server.out.log
+server.err.log
+tools/__pycache__/
+.playwright-cli/
+*.pyc
+.DS_Store
+data/codearts-*.json
+tools/codearts_api.py
+tools/create_codearts_requirements.py
+tools/upload_codearts_*.py

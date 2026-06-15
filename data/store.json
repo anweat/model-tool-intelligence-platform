@@ -1,0 +1,134 @@
+{
+  "providers": [
+    {
+      "id": "prov-openai",
+      "name": "OpenAI",
+      "baseUrl": "https://api.openai.com/v1",
+      "status": "active",
+      "notes": "General purpose text and tool calling models."
+    },
+    {
+      "id": "prov-deepseek",
+      "name": "DeepSeek",
+      "baseUrl": "https://api.deepseek.com",
+      "status": "active",
+      "notes": "Cost-effective coding and reasoning models."
+    }
+  ],
+  "apiKeys": [
+    {
+      "id": "key-demo-openai",
+      "providerId": "prov-openai",
+      "label": "Course demo key",
+      "secret": "sk-demo-not-a-real-key",
+      "owner": "student",
+      "status": "enabled",
+      "createdAt": "2026-06-15T07:30:48.708Z"
+    }
+  ],
+  "models": [
+    {
+      "id": "model-gpt-4o-mini",
+      "providerId": "prov-openai",
+      "name": "gpt-4o-mini",
+      "contextWindow": 128000,
+      "inputPricePer1K": 0.00015,
+      "outputPricePer1K": 0.0006,
+      "cacheDiscount": 0.5,
+      "toolCalling": true
+    },
+    {
+      "id": "model-deepseek-chat",
+      "providerId": "prov-deepseek",
+      "name": "deepseek-chat",
+      "contextWindow": 64000,
+      "inputPricePer1K": 0.00014,
+      "outputPricePer1K": 0.00028,
+      "cacheDiscount": 0.4,
+      "toolCalling": true
+    }
+  ],
+  "calls": [
+    {
+      "id": "call-seed-1",
+      "providerId": "prov-openai",
+      "modelId": "model-gpt-4o-mini",
+      "toolName": "summarize_invoice",
+      "inputTokens": 1850,
+      "outputTokens": 420,
+      "cacheHit": true,
+      "latencyMs": 920,
+      "createdAt": "2026-06-14T07:30:48.709Z"
+    },
+    {
+      "id": "call-seed-2",
+      "providerId": "prov-deepseek",
+      "modelId": "model-deepseek-chat",
+      "toolName": "code_review",
+      "inputTokens": 3240,
+      "outputTokens": 870,
+      "cacheHit": false,
+      "latencyMs": 1340,
+      "createdAt": "2026-06-15T07:30:48.709Z"
+    },
+    {
+      "id": "call-seed-3",
+      "providerId": "prov-openai",
+      "modelId": "model-gpt-4o-mini",
+      "toolName": "search_docs",
+      "inputTokens": 920,
+      "outputTokens": 260,
+      "cacheHit": true,
+      "latencyMs": 610,
+      "success": true,
+      "errorType": "",
+      "createdAt": "2026-06-13T07:30:48.709Z"
+    },
+    {
+      "id": "call-seed-4",
+      "providerId": "prov-deepseek",
+      "modelId": "model-deepseek-chat",
+      "toolName": "generate_sql",
+      "inputTokens": 2100,
+      "outputTokens": 640,
+      "cacheHit": false,
+      "latencyMs": 1680,
+      "success": false,
+      "errorType": "timeout",
+      "createdAt": "2026-06-12T07:30:48.709Z"
+    },
+    {
+      "id": "call-seed-5",
+      "providerId": "prov-openai",
+      "modelId": "model-gpt-4o-mini",
+      "toolName": "summarize_invoice",
+      "inputTokens": 1720,
+      "outputTokens": 390,
+      "cacheHit": true,
+      "latencyMs": 880,
+      "success": true,
+      "errorType": "",
+      "createdAt": "2026-06-11T07:30:48.709Z"
+    },
+    {
+      "id": "call-seed-6",
+      "providerId": "prov-openai",
+      "modelId": "model-gpt-4o-mini",
+      "toolName": "search_docs",
+      "inputTokens": 1040,
+      "outputTokens": 310,
+      "cacheHit": false,
+      "latencyMs": 740,
+      "success": true,
+      "errorType": "",
+      "createdAt": "2026-06-10T07:30:48.709Z"
+    }
+  ],
+  "auditLogs": [],
+  "settings": {
+    "currency": "USD",
+    "monthlyBudget": 0.01,
+    "warningThreshold": 0.8,
+    "retentionDays": 90
+  }
+}

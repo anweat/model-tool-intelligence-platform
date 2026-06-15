@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#334155"/></marker></defs>
+
+<style>
+  .bg{fill:#f8fafc}.panel{fill:#ffffff;stroke:#cbd5e1;stroke-width:1.2}
+  .title{font:700 22px Arial,'Microsoft YaHei',sans-serif;fill:#0f172a}
+  .label{font:600 13px Arial,'Microsoft YaHei',sans-serif;fill:#0f172a}
+  .small{font:12px Arial,'Microsoft YaHei',sans-serif;fill:#475569}
+  .muted{font:11px Arial,'Microsoft YaHei',sans-serif;fill:#64748b}
+  .actor{stroke:#0f172a;stroke-width:1.6;fill:none}
+  .usecase{fill:#eff6ff;stroke:#2563eb;stroke-width:1.4}
+  .flow{fill:#ecfdf5;stroke:#059669;stroke-width:1.4}
+  .warn{fill:#fff7ed;stroke:#ea580c;stroke-width:1.4}
+  .classHead{fill:#e0f2fe;stroke:#0284c7;stroke-width:1.3}
+  .classBody{fill:#ffffff;stroke:#0284c7;stroke-width:1.3}
+  .line{stroke:#334155;stroke-width:1.3;fill:none;marker-end:url(#arrow)}
+  .dash{stroke:#64748b;stroke-width:1.2;fill:none;stroke-dasharray:5 4;marker-end:url(#arrow)}
+</style>
+
+<rect class="bg" width="980" height="560"/>
+
+<text x="490" y="45" class="title" text-anchor="middle">用例图：供应商、API Key 与模型目录</text>
+<rect x="210" y="82" width="610" height="400" rx="14" class="panel"/>
+<text x="515" y="112" class="label" text-anchor="middle">统一模型管理平台</text>
+
+<circle cx="95" cy="190" r="12" class="actor"/>
+<path d="M95,202 V244 M71,218 H119 M95,244 L73,278 M95,244 L117,278" class="actor"/>
+<text x="95" y="302" class="label" text-anchor="middle">管理员</text>
+
+
+<circle cx="900" cy="210" r="12" class="actor"/>
+<path d="M900,222 V264 M876,238 H924 M900,264 L878,298 M900,264 L922,298" class="actor"/>
+<text x="900" y="322" class="label" text-anchor="middle">模型供应商</text>
+
+<rect x="300" y="150" width="180" height="56" rx="8" class="usecase"/><text x="390.0" y="183.0" class="label" text-anchor="middle">维护供应商</text>
+<rect x="550" y="150" width="180" height="56" rx="8" class="usecase"/><text x="640.0" y="183.0" class="label" text-anchor="middle">登记 API Key</text>
+<rect x="300" y="250" width="180" height="56" rx="8" class="usecase"/><text x="390.0" y="283.0" class="label" text-anchor="middle">脱敏展示 Key</text>
+<rect x="550" y="250" width="180" height="56" rx="8" class="usecase"/><text x="640.0" y="283.0" class="label" text-anchor="middle">维护模型能力</text>
+<rect x="425" y="350" width="180" height="56" rx="8" class="usecase"/><text x="515.0" y="383.0" class="label" text-anchor="middle">维护价格与折扣</text>
+<path d="M145,205 L300,178" class="line"/><path d="M145,245 L300,278" class="line"/><path d="M145,285 L425,378" class="line"/>
+<path d="M820,210 L730,178" class="line"/><path d="M820,235 L730,278" class="line"/><path d="M820,260 L605,378" class="line"/>
+
+</svg>

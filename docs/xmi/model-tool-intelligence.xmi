@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.5.1">
+  <uml:Model xmi:id="model-tool-intelligence" name="模型工具调用智能分析平台">
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg-domain" name="领域模型">
+    <packagedElement xmi:type="uml:Class" xmi:id="class-provider" name="Provider">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-provider-attr-1" name="id"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-provider-attr-2" name="name"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-provider-attr-3" name="baseUrl"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-provider-attr-4" name="status"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-provider-attr-5" name="notes"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-provider-op-1" name="enable()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-provider-op-2" name="disable()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-api-key" name="ApiKey">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-1" name="id"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-2" name="providerId"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-3" name="label"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-4" name="maskedSecret"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-5" name="owner"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-api-key-attr-6" name="status"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-api-key-op-1" name="maskSecret()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-api-key-op-2" name="enable()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-api-key-op-3" name="disable()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-model" name="Model">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-1" name="id"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-2" name="providerId"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-3" name="name"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-4" name="contextWindow"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-5" name="inputPricePer1K"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-6" name="outputPricePer1K"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-7" name="cacheDiscount"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-8" name="toolCalling"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-model-attr-9" name="status"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-model-op-1" name="estimateInputCost()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-model-op-2" name="estimateOutputCost()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-call-record" name="CallRecord">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-1" name="id"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-2" name="providerId"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-3" name="modelId"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-4" name="toolName"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-5" name="inputTokens"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-6" name="outputTokens"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-7" name="cacheHit"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-8" name="latencyMs"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-9" name="success"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-10" name="errorType"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-call-record-attr-11" name="archived"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-call-record-op-1" name="calculateCost()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-call-record-op-2" name="calculateCacheSavings()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-insight-engine" name="InsightEngine">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-insight-engine-attr-1" name="successRate"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-insight-engine-attr-2" name="cacheHitRate"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-insight-engine-attr-3" name="budgetUsageRate"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-insight-engine-attr-4" name="providerConcentration"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-insight-engine-op-1" name="computeSystemProfile()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-insight-engine-op-2" name="computeToolInsights()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-insight-engine-op-3" name="computeFeasibilityScore()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-insight-engine-op-4" name="generateRecommendations()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-feasibility-service" name="FeasibilityService">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-feasibility-service-attr-1" name="monthlyCalls"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-feasibility-service-attr-2" name="inputTokens"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-feasibility-service-attr-3" name="outputTokens"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-feasibility-service-attr-4" name="targetCacheHitRate"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-feasibility-service-op-1" name="estimateMonthlyCost()"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-feasibility-service-op-2" name="evaluateBudget()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="class-audit-log" name="AuditLog">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-1" name="id"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-2" name="action"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-3" name="targetType"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-4" name="targetId"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-5" name="detail"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="class-audit-log-attr-6" name="createdAt"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="class-audit-log-op-1" name="record()"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-key-provider" name="Key belongs to Provider" client="class-api-key" supplier="class-provider"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-model-provider" name="Model belongs to Provider" client="class-model" supplier="class-provider"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-call-model" name="CallRecord uses Model" client="class-call-record" supplier="class-model"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-insight-call" name="InsightEngine analyzes CallRecord" client="class-insight-engine" supplier="class-call-record"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-feasibility-model" name="FeasibilityService estimates Model" client="class-feasibility-service" supplier="class-model"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="dep-audit-call" name="AuditLog records operations" client="class-audit-log" supplier="class-call-record"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg-use-cases" name="用例模型">
+    <packagedElement xmi:type="uml:Actor" xmi:id="actor-admin" name="系统管理员"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="actor-developer" name="开发人员"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="actor-lead" name="项目负责人"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="actor-finance" name="财务统计人员"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="actor-security" name="安全负责人"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-manage-provider" name="维护供应商"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-manage-key" name="管理 API Key"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-manage-model" name="维护模型目录与价格"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-record-call" name="登记工具调用记录"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-view-dashboard" name="查看统计仪表盘"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-generate-profile" name="生成系统画像"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-evaluate-tool" name="评估工具调用价值"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-run-feasibility" name="测算扩容费用可行性"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="uc-export-report" name="导出审计报表"/>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>

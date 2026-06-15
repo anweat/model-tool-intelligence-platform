@@ -1,0 +1,25 @@
+flowchart LR
+  Developer["开发人员"]
+  Manager["项目负责人"]
+  Finance["财务统计人员"]
+  System["模型密钥账本系统"]
+
+  UC1["登记模型调用"]
+  UC2["标记缓存命中"]
+  UC3["查看 Token 统计"]
+  UC4["查看工具调用摘要"]
+  UC5["查看计费报表"]
+  UC6["设置预算告警"]
+
+  Developer --> UC1
+  Developer --> UC2
+  Manager --> UC3
+  Manager --> UC4
+  Finance --> UC5
+  Finance --> UC6
+  UC1 --> System
+  UC2 --> System
+  UC3 --> System
+  UC4 --> System
+  UC5 --> System
+  UC6 --> System

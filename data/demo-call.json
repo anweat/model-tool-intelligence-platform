@@ -1,0 +1,9 @@
+{
+  "providerId": "prov-openai",
+  "modelId": "model-gpt-4o-mini",
+  "toolName": "demo_tool",
+  "inputTokens": 1000,
+  "outputTokens": 250,
+  "cacheHit": true,
+  "latencyMs": 800
+}
