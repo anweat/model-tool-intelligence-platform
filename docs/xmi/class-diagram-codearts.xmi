@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1"
+  xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+  xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="ClassDiagramModel" name="ModelToolIntelligenceClassModel">
+    <packagedElement xmi:type="uml:Class" xmi:id="Provider" name="Provider">
+      <ownedAttribute xmi:id="Provider_attr_1" name="id" visibility="private"/>
+      <ownedAttribute xmi:id="Provider_attr_2" name="name" visibility="private"/>
+      <ownedAttribute xmi:id="Provider_attr_3" name="baseUrl" visibility="private"/>
+      <ownedAttribute xmi:id="Provider_attr_4" name="status" visibility="private"/>
+      <ownedAttribute xmi:id="Provider_attr_5" name="notes" visibility="private"/>
+      <ownedOperation xmi:id="Provider_op_1" name="enable" visibility="public"/>
+      <ownedOperation xmi:id="Provider_op_2" name="disable" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="ApiKey" name="ApiKey">
+      <ownedAttribute xmi:id="ApiKey_attr_1" name="id" visibility="private"/>
+      <ownedAttribute xmi:id="ApiKey_attr_2" name="providerId" visibility="private"/>
+      <ownedAttribute xmi:id="ApiKey_attr_3" name="label" visibility="private"/>
+      <ownedAttribute xmi:id="ApiKey_attr_4" name="maskedSecret" visibility="private"/>
+      <ownedAttribute xmi:id="ApiKey_attr_5" name="owner" visibility="private"/>
+      <ownedAttribute xmi:id="ApiKey_attr_6" name="status" visibility="private"/>
+      <ownedOperation xmi:id="ApiKey_op_1" name="maskSecret" visibility="public"/>
+      <ownedOperation xmi:id="ApiKey_op_2" name="enable" visibility="public"/>
+      <ownedOperation xmi:id="ApiKey_op_3" name="disable" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="Model" name="Model">
+      <ownedAttribute xmi:id="Model_attr_1" name="id" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_2" name="providerId" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_3" name="name" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_4" name="contextWindow" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_5" name="inputPricePer1K" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_6" name="outputPricePer1K" visibility="private"/>
+      <ownedAttribute xmi:id="Model_attr_7" name="cacheDiscount" visibility="private"/>
+      <ownedOperation xmi:id="Model_op_1" name="estimateCost" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="CallRecord" name="CallRecord">
+      <ownedAttribute xmi:id="CallRecord_attr_1" name="id" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_2" name="providerId" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_3" name="modelId" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_4" name="toolName" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_5" name="inputTokens" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_6" name="outputTokens" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_7" name="cacheHit" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_8" name="latencyMs" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_9" name="success" visibility="private"/>
+      <ownedAttribute xmi:id="CallRecord_attr_10" name="errorType" visibility="private"/>
+      <ownedOperation xmi:id="CallRecord_op_1" name="calculateCost" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="InsightEngine" name="InsightEngine">
+      <ownedAttribute xmi:id="InsightEngine_attr_1" name="successRate" visibility="private"/>
+      <ownedAttribute xmi:id="InsightEngine_attr_2" name="cacheHitRate" visibility="private"/>
+      <ownedAttribute xmi:id="InsightEngine_attr_3" name="budgetUsageRate" visibility="private"/>
+      <ownedOperation xmi:id="InsightEngine_op_1" name="computeSystemProfile" visibility="public"/>
+      <ownedOperation xmi:id="InsightEngine_op_2" name="computeToolInsights" visibility="public"/>
+      <ownedOperation xmi:id="InsightEngine_op_3" name="computeFeasibilityScore" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="FeasibilityService" name="FeasibilityService">
+      <ownedAttribute xmi:id="FeasibilityService_attr_1" name="monthlyCalls" visibility="private"/>
+      <ownedAttribute xmi:id="FeasibilityService_attr_2" name="targetCacheHitRate" visibility="private"/>
+      <ownedOperation xmi:id="FeasibilityService_op_1" name="estimateMonthlyCost" visibility="public"/>
+      <ownedOperation xmi:id="FeasibilityService_op_2" name="evaluateBudget" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="AuditLog" name="AuditLog">
+      <ownedAttribute xmi:id="AuditLog_attr_1" name="id" visibility="private"/>
+      <ownedAttribute xmi:id="AuditLog_attr_2" name="action" visibility="private"/>
+      <ownedAttribute xmi:id="AuditLog_attr_3" name="targetType" visibility="private"/>
+      <ownedAttribute xmi:id="AuditLog_attr_4" name="targetId" visibility="private"/>
+      <ownedAttribute xmi:id="AuditLog_attr_5" name="createdAt" visibility="private"/>
+      <ownedOperation xmi:id="AuditLog_op_1" name="record" visibility="public"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="AssocApiKeyProvider" name="ApiKeyProvider">
+      <memberEnd xmi:idref="AssocApiKeyProvider_end1"/>
+      <memberEnd xmi:idref="AssocApiKeyProvider_end2"/>
+      <ownedEnd xmi:id="AssocApiKeyProvider_end1" type="ApiKey" association="AssocApiKeyProvider"/>
+      <ownedEnd xmi:id="AssocApiKeyProvider_end2" type="Provider" association="AssocApiKeyProvider"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="AssocModelProvider" name="ModelProvider">
+      <memberEnd xmi:idref="AssocModelProvider_end1"/>
+      <memberEnd xmi:idref="AssocModelProvider_end2"/>
+      <ownedEnd xmi:id="AssocModelProvider_end1" type="Model" association="AssocModelProvider"/>
+      <ownedEnd xmi:id="AssocModelProvider_end2" type="Provider" association="AssocModelProvider"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="AssocCallModel" name="CallModel">
+      <memberEnd xmi:idref="AssocCallModel_end1"/>
+      <memberEnd xmi:idref="AssocCallModel_end2"/>
+      <ownedEnd xmi:id="AssocCallModel_end1" type="CallRecord" association="AssocCallModel"/>
+      <ownedEnd xmi:id="AssocCallModel_end2" type="Model" association="AssocCallModel"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="AssocInsightCall" name="InsightCall">
+      <memberEnd xmi:idref="AssocInsightCall_end1"/>
+      <memberEnd xmi:idref="AssocInsightCall_end2"/>
+      <ownedEnd xmi:id="AssocInsightCall_end1" type="InsightEngine" association="AssocInsightCall"/>
+      <ownedEnd xmi:id="AssocInsightCall_end2" type="CallRecord" association="AssocInsightCall"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Association" xmi:id="AssocFeasibilityModel" name="FeasibilityModel">
+      <memberEnd xmi:idref="AssocFeasibilityModel_end1"/>
+      <memberEnd xmi:idref="AssocFeasibilityModel_end2"/>
+      <ownedEnd xmi:id="AssocFeasibilityModel_end1" type="FeasibilityService" association="AssocFeasibilityModel"/>
+      <ownedEnd xmi:id="AssocFeasibilityModel_end2" type="Model" association="AssocFeasibilityModel"/>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>

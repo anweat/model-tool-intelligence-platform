@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1"
+  xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+  xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="UseCaseModel" name="ModelToolIntelligenceUseCaseModel">
+    <packagedElement xmi:type="uml:Actor" xmi:id="SystemAdmin" name="SystemAdmin"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="Developer" name="Developer"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="ProjectLead" name="ProjectLead"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="FinanceUser" name="FinanceUser"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="SecurityUser" name="SecurityUser"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="ManageProvider" name="ManageProvider"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="ManageApiKey" name="ManageApiKey"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="ManageModelCatalog" name="ManageModelCatalog"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="RecordToolCall" name="RecordToolCall"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="ViewDashboard" name="ViewDashboard"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="GenerateSystemProfile" name="GenerateSystemProfile"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="EvaluateToolValue" name="EvaluateToolValue"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="EstimateFeasibility" name="EstimateFeasibility"/>
+    <packagedElement xmi:type="uml:UseCase" xmi:id="ExportReport" name="ExportReport"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageAdminProvider" client="SystemAdmin" supplier="ManageProvider"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageAdminModel" client="SystemAdmin" supplier="ManageModelCatalog"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageSecurityKey" client="SecurityUser" supplier="ManageApiKey"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageDevCall" client="Developer" supplier="RecordToolCall"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageLeadDashboard" client="ProjectLead" supplier="ViewDashboard"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageLeadProfile" client="ProjectLead" supplier="GenerateSystemProfile"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageLeadTool" client="ProjectLead" supplier="EvaluateToolValue"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageFinanceFeasibility" client="FinanceUser" supplier="EstimateFeasibility"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="UsageLeadExport" client="ProjectLead" supplier="ExportReport"/>
+  </uml:Model>
+</xmi:XMI>
