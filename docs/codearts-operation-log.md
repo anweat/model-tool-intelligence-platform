@@ -48,6 +48,34 @@ py -3.14 tools\upload_codearts_repo.py --dry-run
 py -3.14 tools\upload_codearts_repo.py --repo <仓库名称关键字>
 ```
 
+## 软件仓库复核
+
+后续复核确认 CodeArts Repo SDK 鉴权问题来自签名参数: `CodeArtsRepoClient` 需要使用 `BasicCredentials(accessKey, secretKey)`，不能把 CodeArts 项目 ID 作为 signer project id 传入。修正后可通过 API 读取仓库信息。
+
+- CodeArts Repo 仓库: `model-tool-intelligence-platform`
+- 仓库 ID: `3054859`
+- 所属项目: `NewNode`
+- 默认分支: `master`
+- 仓库状态: 非空、未归档、可读取
+- 可见性: `public`
+- 安全等级: `internal`
+- 镜像源: `https://github.com/anweat/model-tool-intelligence-platform.git`
+- 远端镜像: 已启用，最近同步成功，无错误
+- 当前文件数: 49
+- 已确认包含:
+  - `README.md`
+  - `server.js`
+  - `public/app.js`
+  - `docs/project-specification.md`
+  - `docs/codearts-requirements.md`
+  - `docs/implementation-report.md`
+  - `docs/modeling-checklist.md`
+  - `docs/codearts-import/model_tool_intelligence_master.zip`
+  - `docs/xmi/codearts-export-compatible/*.xmi`
+  - `tools/generate_codearts_model_project.py`
+
+注意: 当前 CodeArts 仓库是从 GitHub 导入的镜像仓库，直接 `CreateCommit` 会返回 `CH.01100022: repository is an image repository`。更新方式应为先推送 GitHub，再通过 CodeArts Repo 的远端镜像同步接口拉取最新内容。
+
 ## 项目文档附件上传
 
 2026-06-15 已通过 `UploadAttachmentsRequest` 将关键项目文档上传到 Epic `70878470`:
