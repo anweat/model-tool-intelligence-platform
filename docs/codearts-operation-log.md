@@ -129,3 +129,17 @@ py -3.14 tools\upload_codearts_repo.py --repo <仓库名称关键字>
 - `70878471` 是 Feature，父级为 `70878470`。
 - `70878472` 是 Story，父级为 `70878471`。
 - `70878487` 是 Story，父级为 `70878485`。
+
+## 工作项状态收尾
+
+2026-06-17 通过 `UpdateIssueV4Request` 将 25 条工作项统一更新为完成状态:
+
+- Epic: 1 条，状态 `已关闭`，完成度 `100%`
+- Feature: 6 条，状态 `已关闭`，完成度 `100%`
+- User Story: 18 条，状态 `已关闭`，完成度 `100%`
+
+复核结果:
+
+- `ListIssuesSfV4` 返回 25 条工作项。
+- 状态汇总为: `Epic/已关闭 = 1`，`Feature/已关闭 = 6`，`Story/已关闭 = 18`。
+- `ShowIssueCompletionRate` 返回 `tracker_id=5 closed_num=1`、`tracker_id=6 closed_num=6`、`tracker_id=7 closed_num=18`。
