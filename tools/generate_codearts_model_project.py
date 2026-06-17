@@ -53,13 +53,14 @@ def mx_object(cell_id: str, kind: str, name: str, x: int, y: int, w: int, h: int
     )
 
 
-def mx_edge(edge_id: str, source: str, target: str, kind: str = "Use") -> str:
+def mx_edge(edge_id: str, source: str, target: str, points: list[tuple[int, int]], kind: str = "Use") -> str:
     label = xattr(f'<div id="CELL_TYPE">&lt;&lt;{kind}&gt;&gt;</div><div id="CELL_NAME" style="max-width: initial; word-wrap: break-word;margin:0 auto;"></div>')
-    style = "edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=1;html=1;strokeColor=#000000;endArrow=open;startArrow=none;endSize=6;endFill=0;dashed=1;"
+    style = "edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=1;html=1;strokeColor=#000000;endArrow=open;startArrow=none;endSize=6;endFill=0;dashed=1;jettySize=24;orthogonalLoop=1;"
+    point_xml = "".join(f'<mxPoint x="{x}" y="{y}"/>' for x, y in points)
     return (
         f'<object showMemberProperty="true" id="{xattr(edge_id)}" type="{xattr(kind)}" stereotype="{xattr(kind)}" label="{label}" pureName="">'
         f'<mxCell style="{xattr(style)}" edge="1" parent="1" source="{xattr(source)}" target="{xattr(target)}">'
-        '<mxGeometry relative="1" as="geometry"><Array as="points"/></mxGeometry></mxCell></object>'
+        f'<mxGeometry relative="1" as="geometry"><Array as="points">{point_xml}</Array></mxGeometry></mxCell></object>'
     )
 
 
@@ -199,6 +200,105 @@ def diagram_row(diagram_id: str, package_id: str, name: str, stereotype: str, se
     }
 
 
+def center(node: tuple[str, str, int, int, int, int]) -> tuple[int, int]:
+    _, _, x, y, w, h = node
+    return x + w // 2, y + h // 2
+
+
+def route_edge(
+    nodes: list[tuple[str, str, int, int, int, int]],
+    source_idx: int,
+    target_idx: int,
+    edge_no: int,
+    fanout_index: int,
+    fanin_index: int,
+) -> list[tuple[int, int]]:
+    _, _, sx, sy, sw, sh = nodes[source_idx]
+    _, _, tx, ty, tw, th = nodes[target_idx]
+    scx, scy = center(nodes[source_idx])
+    tcx, tcy = center(nodes[target_idx])
+    lane = 28 + (edge_no % 4) * 18
+    fanout = (fanout_index - 1) * 42
+    fanin = (fanin_index - 1) * 34
+
+    if sx + sw <= tx:
+        start_x = sx + sw + lane
+        end_x = tx - lane
+        mid_x = (start_x + end_x) // 2 + fanout - fanin
+        return [(start_x, scy + fanout), (mid_x, scy + fanout), (mid_x, tcy + fanin), (end_x, tcy + fanin)]
+    if tx + tw <= sx:
+        start_x = sx - lane
+        end_x = tx + tw + lane
+        mid_x = (start_x + end_x) // 2 - fanout + fanin
+        return [(start_x, scy + fanout), (mid_x, scy + fanout), (mid_x, tcy + fanin), (end_x, tcy + fanin)]
+    if sy + sh <= ty:
+        start_y = sy + sh + lane
+        end_y = ty - lane
+        mid_y = (start_y + end_y) // 2 + fanout - fanin
+        return [(scx + fanout, start_y), (scx + fanout, mid_y), (tcx + fanin, mid_y), (tcx + fanin, end_y)]
+    if ty + th <= sy:
+        start_y = sy - lane
+        end_y = ty + th + lane
+        mid_y = (start_y + end_y) // 2 - fanout + fanin
+        return [(scx + fanout, start_y), (scx + fanout, mid_y), (tcx + fanin, mid_y), (tcx + fanin, end_y)]
+
+    detour_x = max(sx + sw, tx + tw) + 60 + lane
+    return [(detour_x, scy + fanout), (detour_x, tcy + fanin)]
+
+
+def route_sequence_edge(
+    nodes: list[tuple[str, str, int, int, int, int]],
+    source_idx: int,
+    target_idx: int,
+    edge_no: int,
+) -> list[tuple[int, int]]:
+    scx, _ = center(nodes[source_idx])
+    tcx, _ = center(nodes[target_idx])
+    base_y = max(y + h for _, _, _, y, _, h in nodes) + 70
+    message_y = base_y + (edge_no - 1) * 70
+    return [(scx, message_y), (tcx, message_y)]
+
+
+def axis_segments(points: list[tuple[int, int]]) -> list[tuple[str, int, int, int]]:
+    segments = []
+    for (x1, y1), (x2, y2) in zip(points, points[1:]):
+        if x1 == x2:
+            segments.append(("v", x1, min(y1, y2), max(y1, y2)))
+        elif y1 == y2:
+            segments.append(("h", y1, min(x1, x2), max(x1, x2)))
+    return segments
+
+
+def overlap_len(a1: int, a2: int, b1: int, b2: int) -> int:
+    return max(0, min(a2, b2) - max(a1, b1))
+
+
+def validate_route_spacing(diagram_name: str, routes: list[list[tuple[int, int]]]) -> None:
+    segments = []
+    for route_index, route in enumerate(routes, 1):
+        for segment in axis_segments(route):
+            segments.append((route_index, *segment))
+
+    problems = []
+    for i, (route_a, orientation_a, fixed_a, start_a, end_a) in enumerate(segments):
+        for route_b, orientation_b, fixed_b, start_b, end_b in segments[i + 1:]:
+            if route_a == route_b or orientation_a != orientation_b:
+                continue
+            overlap = overlap_len(start_a, end_a, start_b, end_b)
+            if overlap < 40:
+                continue
+            distance = abs(fixed_a - fixed_b)
+            if distance == 0 or distance < 18:
+                problems.append((route_a, route_b, orientation_a, distance, overlap))
+
+    if problems:
+        detail = "; ".join(
+            f"edge {a} / edge {b} {orientation} distance={distance} overlap={overlap}"
+            for a, b, orientation, distance, overlap in problems[:5]
+        )
+        raise ValueError(f"{diagram_name} has crowded or overlapping routes: {detail}")
+
+
 def build_diagram(package_id: str, diagram_id: str, diagram_type: str, nodes: list[tuple[str, str, int, int, int, int]], edges: list[tuple[int, int]]):
     style_map = {
         "Actor": "container=1;html=1;strokeColor=#808080;fillColor=#FFE6CC;shape=umlActor;verticalLabelPosition=bottom;",
@@ -219,9 +319,19 @@ def build_diagram(package_id: str, diagram_id: str, diagram_type: str, nodes: li
         row["sequence"] = index
         element_rows.append(row)
     line_rows = []
-    for source_idx, target_idx in edges:
+    route_paths = []
+    source_counts = {}
+    target_counts = {}
+    for edge_no, (source_idx, target_idx) in enumerate(edges, 1):
+        source_counts[source_idx] = source_counts.get(source_idx, 0) + 1
+        target_counts[target_idx] = target_counts.get(target_idx, 0) + 1
         edge_id = uid()
-        obj = mx_edge(edge_id, node_ids[source_idx], node_ids[target_idx])
+        if diagram_type == "sequence":
+            points = route_sequence_edge(nodes, source_idx, target_idx, edge_no)
+        else:
+            points = route_edge(nodes, source_idx, target_idx, edge_no, source_counts[source_idx], target_counts[target_idx])
+        route_paths.append(points)
+        obj = mx_edge(edge_id, node_ids[source_idx], node_ids[target_idx], points)
         objects.append(obj)
         line_rows.append(
             {
@@ -258,6 +368,7 @@ def build_diagram(package_id: str, diagram_id: str, diagram_type: str, nodes: li
                 "associate_element_list": None,
             }
         )
+    validate_route_spacing(diagram_type, route_paths)
     return graph(objects), element_rows, line_rows
 
 
@@ -306,47 +417,47 @@ def main() -> None:
 
         specs = [
             ("usecase", "API Key 与模型目录管理", "用例图-密钥与模型", [
-                ("Actor", "系统管理员", 80, 120, 70, 80),
-                ("Actor", "安全负责人", 80, 300, 70, 80),
-                ("UseCase", "维护供应商", 300, 80, 150, 70),
-                ("UseCase", "管理 API Key", 300, 180, 150, 70),
-                ("UseCase", "脱敏展示 API Key", 520, 180, 170, 70),
-                ("UseCase", "维护模型目录", 300, 300, 150, 70),
-                ("UseCase", "维护价格与缓存折扣", 520, 300, 190, 70),
+                ("Actor", "系统管理员", 70, 130, 70, 80),
+                ("Actor", "安全负责人", 70, 390, 70, 80),
+                ("UseCase", "维护供应商", 320, 70, 170, 70),
+                ("UseCase", "管理 API Key", 320, 210, 170, 70),
+                ("UseCase", "脱敏展示 API Key", 690, 210, 190, 70),
+                ("UseCase", "维护模型目录", 320, 350, 170, 70),
+                ("UseCase", "维护价格与缓存折扣", 690, 350, 220, 70),
             ], [(0, 2), (0, 3), (1, 4), (0, 5), (0, 6)]),
             ("usecase", "调用统计与智能分析", "用例图-统计与分析", [
-                ("Actor", "开发人员", 80, 120, 70, 80),
-                ("Actor", "项目负责人", 80, 300, 70, 80),
-                ("Actor", "财务统计人员", 80, 480, 70, 80),
-                ("UseCase", "登记工具调用记录", 300, 80, 180, 70),
-                ("UseCase", "查看统计仪表盘", 300, 200, 180, 70),
-                ("UseCase", "生成系统画像", 540, 200, 170, 70),
-                ("UseCase", "评估工具调用价值", 540, 300, 190, 70),
-                ("UseCase", "测算扩容费用可行性", 540, 430, 210, 70),
-                ("UseCase", "导出报表", 300, 430, 160, 70),
+                ("Actor", "开发人员", 70, 90, 70, 80),
+                ("Actor", "项目负责人", 70, 300, 70, 80),
+                ("Actor", "财务统计人员", 70, 520, 70, 80),
+                ("UseCase", "登记工具调用记录", 310, 70, 200, 70),
+                ("UseCase", "查看统计仪表盘", 310, 250, 200, 70),
+                ("UseCase", "生成系统画像", 720, 170, 190, 70),
+                ("UseCase", "评估工具调用价值", 720, 300, 210, 70),
+                ("UseCase", "测算扩容费用可行性", 720, 500, 230, 70),
+                ("UseCase", "导出报表", 310, 500, 180, 70),
             ], [(0, 3), (1, 4), (1, 5), (1, 6), (2, 7), (1, 8)]),
             ("class", "核心领域模型", "类图-核心领域模型", [
-                ("Class", "Provider", 80, 80, 160, 80),
-                ("Class", "ApiKey", 320, 80, 160, 80),
-                ("Class", "Model", 560, 80, 160, 80),
-                ("Class", "CallRecord", 200, 260, 180, 90),
-                ("Class", "InsightEngine", 470, 260, 200, 90),
-                ("Class", "FeasibilityService", 470, 430, 220, 90),
-                ("Class", "AuditLog", 80, 430, 160, 80),
+                ("Class", "Provider", 90, 80, 170, 80),
+                ("Class", "ApiKey", 380, 80, 170, 80),
+                ("Class", "Model", 690, 80, 170, 80),
+                ("Class", "CallRecord", 380, 270, 190, 90),
+                ("Class", "InsightEngine", 710, 300, 220, 90),
+                ("Class", "FeasibilityService", 710, 500, 230, 90),
+                ("Class", "AuditLog", 120, 500, 170, 80),
             ], [(1, 0), (2, 0), (3, 2), (4, 3), (5, 2), (6, 3)]),
             ("activity", "调用登记与计费流程", "活动图-调用登记与计费", [
-                ("Activity", "接收调用记录", 100, 80, 160, 60),
-                ("Activity", "读取模型价格", 320, 80, 160, 60),
-                ("Activity", "统计 Token", 540, 80, 160, 60),
-                ("Activity", "判断缓存命中", 540, 220, 170, 60),
-                ("Activity", "计算费用与节省", 320, 220, 180, 60),
-                ("Activity", "更新系统画像", 100, 220, 170, 60),
+                ("Activity", "接收调用记录", 90, 90, 170, 60),
+                ("Activity", "读取模型价格", 370, 90, 170, 60),
+                ("Activity", "统计 Token", 650, 90, 170, 60),
+                ("Activity", "判断缓存命中", 650, 310, 180, 60),
+                ("Activity", "计算费用与节省", 370, 310, 190, 60),
+                ("Activity", "更新系统画像", 90, 310, 180, 60),
             ], [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)]),
             ("sequence", "新增调用记录时序", "顺序图-新增调用记录", [
-                ("Lifeline", "前端页面", 80, 80, 120, 60),
-                ("Lifeline", "API 服务", 260, 80, 120, 60),
-                ("Lifeline", "JSON 存储", 440, 80, 120, 60),
-                ("Lifeline", "InsightEngine", 620, 80, 150, 60),
+                ("Lifeline", "前端页面", 80, 90, 130, 60),
+                ("Lifeline", "API 服务", 320, 90, 130, 60),
+                ("Lifeline", "JSON 存储", 560, 90, 130, 60),
+                ("Lifeline", "InsightEngine", 800, 90, 160, 60),
             ], [(0, 1), (1, 2), (1, 3), (3, 0)]),
         ]
 
