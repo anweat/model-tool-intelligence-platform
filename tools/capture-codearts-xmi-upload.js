@@ -7,6 +7,27 @@
     console.log("[CodeArts XMI capture]", item);
   };
 
+  const stringifyBody = (body) => {
+    if (!body) return "";
+    if (typeof body === "string") return body.slice(0, 4000);
+    if (body instanceof FormData) {
+      const rows = [];
+      for (const [key, value] of body.entries()) {
+        if (value instanceof File) {
+          rows.push({ key, fileName: value.name, size: value.size, type: value.type });
+        } else {
+          rows.push({ key, value: String(value).slice(0, 1000) });
+        }
+      }
+      return rows;
+    }
+    try {
+      return JSON.stringify(body).slice(0, 4000);
+    } catch {
+      return Object.prototype.toString.call(body);
+    }
+  };
+
   const originalFetch = window.fetch;
   window.fetch = async function patchedFetch(input, init = {}) {
     const url = typeof input === "string" ? input : input && input.url;
@@ -30,6 +51,7 @@
           statusText: response.statusText,
           startedAt,
           endedAt: now(),
+          requestBody: stringifyBody(init.body),
           responseBody: body.slice(0, 4000),
         });
       }
@@ -76,6 +98,7 @@
           startedAt,
           endedAt: now(),
           requestBodyType: body && body.constructor ? body.constructor.name : typeof body,
+          requestBody: stringifyBody(body),
           responseBody: responseBody.slice(0, 4000),
         });
       });

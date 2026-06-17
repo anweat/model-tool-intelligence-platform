@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001"
+         xmi:version="2.5.1">
+  <uml:Model xmi:id="m1" name="ProbeModel">
+    <packagedElement xmi:type="uml:Class" xmi:id="c1" name="ProbeClass"/>
+  </uml:Model>
+</xmi:XMI>
