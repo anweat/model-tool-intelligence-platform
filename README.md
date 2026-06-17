@@ -36,16 +36,20 @@ npm test
 - `docs/modeling-checklist.md`: CodeArts 软件建模与截图清单。
 - `docs/diagrams/`: 可单独导入或截图的 Mermaid 建模文件。
 - `docs/xmi/model-tool-intelligence.xmi`: 标准 UML XMI 2.5.1 文件，可用于支持 XMI 的建模工具导入。
+- `docs/xmi/codearts-export-compatible/`: 参考 CodeArts 导出样例生成的轻量 XMI 文件，按用例模型和类模型拆分。
+- `docs/codearts-import/model_tool_intelligence_master.zip`: 参考 CodeArts 模型工程导出包生成的模型工程导入包。
 - `docs/implementation-report.md`: 编码实现报告草稿。
 - `tools/smoke-test.js`: 项目冒烟测试。
 - `tools/generate_xmi.py`: 生成 UML XMI 文件。
+- `tools/generate_codearts_export_xmi.py`: 生成 CodeArts 导出风格的 XMI 文件。
+- `tools/generate_codearts_model_project.py`: 基于 CodeArts 导出的模型工程包模板生成可导入的模型工程 zip。
 
 ## 作业对应关系
 
 - Feature >= 4: 已拆分 6 个 Feature。
 - User Story >= 10: 已拆分 18 个 User Story，每条包含优先级、重要程度和验收标准。
 - 软件建模: 已提供两个用例图、一个活动图、一个类图和一个顺序图。
-- XMI: 已生成包含用例模型和领域类模型的 UML XMI 文件。
+- XMI/模型工程: 已生成标准 UML XMI、CodeArts 导出风格 XMI，以及 CodeArts 模型工程 zip。
 - 代码实现: 已实现关键业务流程、本地文件持久化、智能统计、可行性测算和报表导出。
 
 ## 主要接口

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.omg.org/spec/UML/20131001">
+  <xmi:Documentation exporter="Modeling" exporterVersion="1.0"/>
+  <uml:Model xmi:type="uml:Model" name="CM_Model">
+    <packagedElement name="用例图" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmi:id="1df639116a914072b1e8cd1d77675a6e" xmi:type="uml:Package">
+      <packagedElement name="Actor1" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmi:id="f189b4146edf4bf59a25c29b41adabcc" xmi:type="uml:Actor"/>
+      <packagedElement name="Actor2" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmi:id="5319c2eaa66f47cf845228f7cd031b85" xmi:type="uml:Actor"/>
+      <packagedElement name="UseCase1" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmi:id="15b0cd9c6fb8417397df0b86bcf329e2" xmi:type="uml:UseCase"/>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>

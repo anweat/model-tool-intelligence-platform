@@ -37,6 +37,22 @@
 - 内容: UML 2.5.1 XMI，包含“领域模型”和“用例模型”两个 Package。
 - 注意: XMI 主要保存模型元素和关系，不保证在所有工具中自动恢复图形布局；如果 CodeArts 页面导入的是“模型工程 zip”，需要优先使用平台导出的工程 zip 格式。
 
+## CodeArts 兼容导入材料
+
+1. CodeArts 导出风格 XMI
+   - 路径: `docs/xmi/codearts-export-compatible/`
+   - 生成脚本: `tools/generate_codearts_export_xmi.py`
+   - 参考依据: `docs/xmi/samples/codearts-use-case-sample.xmi`，使用 `xmi:XMI`、`xmi:Documentation exporter="Modeling"`、`uml:Model name="CM_Model"` 和单 Package 结构。
+   - 适用入口: 页面中的 XMI 导入按钮。
+   - 限制: 该格式偏模型元素导入，不携带图形布局；如果服务端仍报“服务器内部错误”，可优先尝试更小的单图 XMI 文件。
+
+2. CodeArts 模型工程 zip
+   - 路径: `docs/codearts-import/model_tool_intelligence_master.zip`
+   - 生成脚本: `tools/generate_codearts_model_project.py`
+   - 参考依据: CodeArts 导出的 `model_master_20260617220830.zip`，复用其 `define.json`、`1_meta.zip`、`2_data.zip` 目录协议，重建 Package、Element、Diagram、Line 数据。
+   - 当前内容: 5 个建模包、38 个元素、5 张图、26 条连线。
+   - 适用入口: CodeArts 的模型工程导入/恢复入口，不是 XMI 导入入口。
+
 ## 当前 CodeArts 工作项数量
 
 - Epic: 1
