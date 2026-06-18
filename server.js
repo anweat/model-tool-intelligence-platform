@@ -6,7 +6,7 @@ const crypto = require("node:crypto");
 const PORT = Number(process.env.PORT || 4173);
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, "public");
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, "data");
 const STORE_PATH = path.join(DATA_DIR, "store.json");
 
 const DEFAULT_STORE = {
@@ -426,6 +426,16 @@ function required(value, name) {
   }
 }
 
+function numberInRange(value, name, { min = 0, max = Number.POSITIVE_INFINITY, fallback = 0 } = {}) {
+  const numberValue = value === undefined || value === null || value === "" ? fallback : Number(value);
+  if (!Number.isFinite(numberValue) || numberValue < min || numberValue > max) {
+    const error = new Error(`${name} must be a number between ${min} and ${max}`);
+    error.statusCode = 400;
+    throw error;
+  }
+  return numberValue;
+}
+
 function mergeById(items, idValue, patch, allowedFields) {
   const index = items.findIndex((item) => item.id === idValue);
   if (index === -1) {
@@ -472,6 +482,15 @@ function validateRef(store, collection, idValue, name) {
   }
 }
 
+function validateModelBelongsToProvider(store, providerId, modelId) {
+  const model = store.models.find((item) => item.id === modelId);
+  if (!model || model.providerId !== providerId) {
+    const error = new Error("modelId does not belong to providerId");
+    error.statusCode = 400;
+    throw error;
+  }
+}
+
 function statePayload(store) {
   return { state: publicStore(store), summary: computeSummary(store), insights: computeInsights(store) };
 }
@@ -510,10 +529,10 @@ async function handleApi(req, res, url) {
     required(body.modelId, "modelId");
     validateRef(store, "models", body.modelId, "modelId");
     const model = store.models.find((item) => item.id === body.modelId);
-    const monthlyCalls = Number(body.monthlyCalls || 0);
-    const inputTokens = Number(body.inputTokens || 0);
-    const outputTokens = Number(body.outputTokens || 0);
-    const targetCacheHitRate = Number(body.targetCacheHitRate || 0);
+    const monthlyCalls = numberInRange(body.monthlyCalls, "monthlyCalls");
+    const inputTokens = numberInRange(body.inputTokens, "inputTokens");
+    const outputTokens = numberInRange(body.outputTokens, "outputTokens");
+    const targetCacheHitRate = numberInRange(body.targetCacheHitRate, "targetCacheHitRate", { min: 0, max: 1 });
     const inputPrice = Number(model.inputPricePer1K || 0);
     const outputPrice = Number(model.outputPricePer1K || 0);
     const cacheDiscount = Number(model.cacheDiscount ?? 1);
@@ -577,10 +596,10 @@ async function handleApi(req, res, url) {
       id: id("model"),
       providerId: body.providerId,
       name: body.name,
-      contextWindow: Number(body.contextWindow || 0),
-      inputPricePer1K: Number(body.inputPricePer1K || 0),
-      outputPricePer1K: Number(body.outputPricePer1K || 0),
-      cacheDiscount: Number(body.cacheDiscount || 1),
+      contextWindow: numberInRange(body.contextWindow, "contextWindow"),
+      inputPricePer1K: numberInRange(body.inputPricePer1K, "inputPricePer1K"),
+      outputPricePer1K: numberInRange(body.outputPricePer1K, "outputPricePer1K"),
+      cacheDiscount: numberInRange(body.cacheDiscount, "cacheDiscount", { min: 0, max: 1, fallback: 1 }),
       toolCalling: Boolean(body.toolCalling),
       status: body.status || "available"
     });
@@ -595,15 +614,16 @@ async function handleApi(req, res, url) {
     required(body.modelId, "modelId");
     validateRef(store, "providers", body.providerId, "providerId");
     validateRef(store, "models", body.modelId, "modelId");
+    validateModelBelongsToProvider(store, body.providerId, body.modelId);
     store.calls.push({
       id: id("call"),
       providerId: body.providerId,
       modelId: body.modelId,
       toolName: body.toolName || "none",
-      inputTokens: Number(body.inputTokens || 0),
-      outputTokens: Number(body.outputTokens || 0),
+      inputTokens: numberInRange(body.inputTokens, "inputTokens"),
+      outputTokens: numberInRange(body.outputTokens, "outputTokens"),
       cacheHit: Boolean(body.cacheHit),
-      latencyMs: Number(body.latencyMs || 0),
+      latencyMs: numberInRange(body.latencyMs, "latencyMs"),
       success: body.success === undefined ? true : Boolean(body.success),
       errorType: body.errorType || "",
       archived: false,
@@ -625,9 +645,13 @@ async function handleApi(req, res, url) {
     } else if (collection === "models") {
       const patch = { ...body };
       for (const field of ["contextWindow", "inputPricePer1K", "outputPricePer1K", "cacheDiscount"]) {
-        if (patch[field] !== undefined) patch[field] = Number(patch[field]);
+        if (patch[field] !== undefined) {
+          const limits = field === "cacheDiscount" ? { min: 0, max: 1 } : {};
+          patch[field] = numberInRange(patch[field], field, limits);
+        }
       }
       if (patch.toolCalling !== undefined) patch.toolCalling = Boolean(patch.toolCalling);
+      if (patch.providerId !== undefined) validateRef(store, "providers", patch.providerId, "providerId");
       mergeById(store.models, resourceId, patch, [
         "name",
         "providerId",
@@ -641,10 +665,16 @@ async function handleApi(req, res, url) {
     } else {
       const patch = { ...body };
       for (const field of ["inputTokens", "outputTokens", "latencyMs"]) {
-        if (patch[field] !== undefined) patch[field] = Number(patch[field]);
+        if (patch[field] !== undefined) patch[field] = numberInRange(patch[field], field);
       }
       if (patch.cacheHit !== undefined) patch.cacheHit = Boolean(patch.cacheHit);
       if (patch.success !== undefined) patch.success = Boolean(patch.success);
+      const existing = store.calls.find((item) => item.id === resourceId);
+      const providerId = patch.providerId || existing?.providerId;
+      const modelId = patch.modelId || existing?.modelId;
+      if (patch.providerId !== undefined) validateRef(store, "providers", patch.providerId, "providerId");
+      if (patch.modelId !== undefined) validateRef(store, "models", patch.modelId, "modelId");
+      validateModelBelongsToProvider(store, providerId, modelId);
       mergeById(store.calls, resourceId, patch, [
         "providerId",
         "modelId",
@@ -703,9 +733,9 @@ async function handleApi(req, res, url) {
     store.settings = {
       ...(store.settings || {}),
       currency: body.currency || store.settings?.currency || "USD",
-      monthlyBudget: Number(body.monthlyBudget ?? store.settings?.monthlyBudget ?? 0),
-      warningThreshold: Number(body.warningThreshold ?? store.settings?.warningThreshold ?? 0.8),
-      retentionDays: Number(body.retentionDays ?? store.settings?.retentionDays ?? 90)
+      monthlyBudget: numberInRange(body.monthlyBudget, "monthlyBudget", { fallback: store.settings?.monthlyBudget ?? 0 }),
+      warningThreshold: numberInRange(body.warningThreshold, "warningThreshold", { min: 0, max: 1, fallback: store.settings?.warningThreshold ?? 0.8 }),
+      retentionDays: numberInRange(body.retentionDays, "retentionDays", { min: 1, fallback: store.settings?.retentionDays ?? 90 })
     };
     audit(store, "update", "settings", "global");
     await writeStore(store);
