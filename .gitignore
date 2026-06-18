@@ -11,3 +11,9 @@ data/codearts-*.json
 tools/codearts_api.py
 tools/create_codearts_requirements.py
 tools/upload_codearts_*.py
+docs/submission/**/qa-render*/
+docs/submission/**/package/
+docs/submission/**/*.zip
+docs/submission/lo-test/
+docs/submission/rendered_pdf/
+docs/submission/server.pid

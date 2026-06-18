@@ -30,6 +30,12 @@
 - 软件建模截图: 分别截取两个用例图、一个活动图、一个类图、一个顺序图。
 - MVP 截图: 截取本地 `http://localhost:4173` 的总览、预算告警、供应商/Key/模型列表和调用记录区域。
 
+## 正式图片导出
+
+- 正式报告和提交包使用 `docs/diagrams/exported-png/` 与 `docs/submission/images/` 下的 PNG 图片。
+- PNG 图片使用系统中文字体导出，已规避部分 SVG 查看器或 PDF 转换器中文字体回退失败导致的缺字、方块字问题。
+- `docs/diagrams/rendered/*.svg` 保留为可编辑中间产物，不作为最终报告插图来源。
+
 ## XMI 文件
 
 - 路径: `docs/xmi/model-tool-intelligence.xmi`
